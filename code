@@ -1,0 +1,62 @@
+from IPython.display import display, HTML
+import datetime
+
+def stock_portfolio_tracker():
+    # Predefined stock prices
+    stock_prices = {
+        "AAPL": 180,
+        "TSLA": 250,
+        "GOOGL": 140,
+        "AMZN": 130,
+        "INFY": 1600,
+        "TCS": 3700,
+        "RELIANCE": 2900
+    }
+
+    # Intro Message
+    display(HTML("<h2 style='color:darkblue;'>📊 Stock Portfolio Tracker</h2>"))
+    display(HTML("<p style='color:green;'>Enter your stock holdings and see the total investment value.</p>"))
+    display(HTML("<hr>"))
+
+    portfolio = []
+    total_value = 0
+
+    while True:
+        stock = input("Enter Stock Symbol (or type 'done' to finish): ").upper()
+        if stock == "DONE":
+            break
+
+        if stock not in stock_prices:
+            display(HTML(f"<p style='color:red;'>❌ '{stock}' is not in our stock list.</p>"))
+            continue
+
+        try:
+            quantity = int(input(f"Enter quantity of {stock}: "))
+        except ValueError:
+            display(HTML("<p style='color:orange;'>⚠️ Please enter a valid number.</p>"))
+            continue
+
+        price = stock_prices[stock]
+        value = price * quantity
+        total_value += value
+        portfolio.append((stock, quantity, price, value))
+
+        display(HTML(f"<p style='color:blue;'>📦 {quantity} shares of <b>{stock}</b> @ ₹{price} each = ₹{value}</p>"))
+
+    # Summary
+    display(HTML("<hr>"))
+    display(HTML(f"<h3 style='color:purple;'>💰 Total Investment: ₹{total_value}</h3>"))
+
+    # Optional Save to File
+    save = input("Do you want to save this result to a .txt file? (yes/no): ").lower()
+    if save == "yes":
+        filename = f"stock_summary_{datetime.datetime.now().strftime('%Y%m%d_%H%M%S')}.txt"
+        with open(filename, "w") as file:
+            file.write("📊 Stock Portfolio Summary\n")
+            file.write("---------------------------------\n")
+            for stock, qty, price, value in portfolio:
+                file.write(f"{qty} x {stock} @ ₹{price} = ₹{value}\n")
+            file.write(f"\n💰 Total Investment: ₹{total_value}\n")
+        display(HTML(f"<p style='color:green;'>✅ Result saved as <b>{filename}</b></p>"))
+
+stock_portfolio_tracker()
